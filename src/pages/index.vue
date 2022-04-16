@@ -19,7 +19,7 @@ const go = () => {
     <a href="./plum">001 - plum blossom</a>
     <div py-4 />
 
-    <!-- <input
+    <input
       id="input"
       v-model="name"
       placeholder="What's your name?"
@@ -42,6 +42,6 @@ const go = () => {
       >
         Go
       </button>
-    </div> -->
+    </div>
   </div>
 </template>

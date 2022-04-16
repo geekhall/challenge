@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{
-  modelValue?: boolean
-}>()
+// const props = defineProps<{
+//   modelValue?: boolean
+// }>()
 
 </script>
 
