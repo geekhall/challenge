@@ -21,8 +21,6 @@ const startPoint = { x: WIDTH / 2, y: HEIGHT }
 
 function init() {
   ctx.strokeStyle = '#fff'
-  // console.log(Math.sin(Math.PI / 6))
-  // console.log(Math.cos(Math.PI / 3))
   step({
     start: startPoint,
     length: 5,
@@ -104,5 +102,7 @@ onMounted(() => {
       <h1>Plum Blossom.</h1>
     </div>
   </div>
-  <canvas ref="el" width="600" height="600" border />
+  <div flex="~" justify-center>
+    <canvas ref="el" width="600" height="600" border />
+  </div>
 </template>

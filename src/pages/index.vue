@@ -17,6 +17,10 @@ const go = () => {
       </a>
     </p>
     <a href="./plum">001 - plum blossom</a>
+    <br>
+    <a href="./box">002 - droping box</a>
+    <br>
+    <a href="./test">100 - temp test page</a>
     <div py-4 />
 
     <input
