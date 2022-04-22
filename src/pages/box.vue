@@ -2,8 +2,6 @@
 // const props = defineProps<{
 //   modelValue?: boolean
 
-import { clear } from 'console'
-
 // }>()
 const WIDTH = 100
 const LENGTH = 100
@@ -28,14 +26,20 @@ function init() {
     }
     else {
       setTimeout(() => {
-
-      }, 50)
+        drawBoxWithAngle(250, i, -Math.PI / i)
+        i += 1
+        clearBoxWithAngle(250, i, -Math.PI / i)
+      }, 40 * Math.sqrt(i))
     }
   })
 }
 function clearBoxWithAngle(x: number, y: number, angle: number) {
-
+  ctx.translate(x, y + WIDTH)
+  ctx.rotate(angle)
+  ctx.translate(-x, -y - WIDTH)
+  ctx.clearRect(x, y, LENGTH, WIDTH)
 }
+
 function drawBoxWithAngle(x: number, y: number, angle: number) {
   ctx.beginPath()
   ctx.translate(x, y + WIDTH)
