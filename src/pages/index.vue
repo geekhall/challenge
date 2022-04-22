@@ -16,9 +16,11 @@ const go = () => {
         Frontend challenge!
       </a>
     </p>
-    <a href="./plum">001 - plum blossom</a>
+    <a href="./001">001 - droping box</a>
     <br>
-    <a href="./box">002 - droping box</a>
+    <a href="./002">002 - minesweeper</a>
+    <br>
+    <a href="./003">003 - plum blossom</a>
     <br>
     <a href="./test">100 - temp test page</a>
     <div py-4 />

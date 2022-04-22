@@ -1,105 +1,89 @@
-<script setup lang='ts'>
-import { onMounted, ref } from 'vue'
-import Matter from 'matter-js'
+<script setup lang="ts">
+import MineBlock from '../components/MineBlock.vue'
+import { isDev, toggleDev } from '~/composables/storage'
+import { GamePlay } from '~/composables/logic'
 
-const { Engine, Render, World, Bodies, Runner, Mouse, MouseConstraint } = Matter
-const f = {
-  add: () => {},
+// const play = $ref(new GamePlay(6, 6, 2))
+const play = new GamePlay(6, 6, 2)
+const now = $(useNow())
+
+// const start = new Date()
+const timerMS = $computed(() => Math.round(((play.state.value.endMS || +now) - +play.state.value.startMS) / 1000))
+useStorage('minesweeper-state', play.state)
+const state = computed(() => play.board)
+
+const mineRest = $computed(() => {
+  if (!play.state.value.mineGenerated)
+    return play.mines
+  return play.blocks.reduce(
+    (pre, current) => pre + (current.mine ? 1 : 0) - (current.flagged ? 1 : 0), 0)
+})
+
+function newGame(difficulty: 'easy'| 'medium' | 'hard') {
+  switch (difficulty) {
+    case 'easy':
+      // play.reset(9, 9, 10)
+      play.reset(9, 9, 6)
+      break
+    case 'medium':
+      play.reset(16, 16, 40)
+      break
+    case 'hard':
+      play.reset(16, 30, 99)
+      break
+  }
 }
-const canvas = ref(null)
 
-onMounted(async() => {
-  // create an engine
-  const engine = Engine.create()
-
-  // create a renderer
-  const render = Render.create({
-    element: canvas.value!,
-    engine,
-    options: {
-      width: 600,
-      height: 600,
-      background: 'azure',
-      wireframes: false,
-      // @ts-expect-error untyped
-      pixelRatio: 'auto',
-    },
-  })
-  const wirebox = {
-    // fillStyle: 'transparent',
-    fillStyle: '#69ccc2',
-    strokeStyle: 'black',
-    lineWidth: 1,
-  }
-  const wireframe = {
-    // fillStyle: 'transparent',
-    fillStyle: '#6393d3',
-    strokeStyle: 'black',
-    lineWidth: 1,
-  }
-  // create two boxes and a ground
-  const boxA = Bodies.rectangle(400, 200, 80, 80, {
-    isStatic: false,
-    render: wirebox,
-  })
-  const boxB = Bodies.rectangle(450, 50, 80, 80, {
-    isStatic: false,
-    render: wirebox,
-  })
-  // const ground = Bodies.rectangle(400, 610, 810, 60,
-  //   {
-  //     isStatic: true,
-  //     render: wireframe,
-  //   },
-  // )
-  const board = Bodies.rectangle(400, 300, 610, 50, {
-    isStatic: true,
-    render: wireframe,
-  })
-  // add mouse control
-  const mouse = Mouse.create(render.canvas)
-  const mouseConstraint = MouseConstraint.create(engine, {
-    mouse,
-    constraint: {
-      stiffness: 0.2,
-      render: {
-        visible: false,
-      },
-    },
-  })
-  render.mouse = mouse
-  // add all of the bodies to the world
-  World.add(engine.world, [boxA, boxB, board, mouseConstraint])
-
-  f.add = () => {
-    const boxA = Bodies.rectangle(300, -40, Math.random() * 100, Math.random() * 100, { render: wirebox })
-    const ballA = Bodies.circle(300, 40, Math.random() * 40)
-    const polygonA = Bodies.polygon(300, 20, 3, Math.random() * 60)
-    const polygonB = Bodies.polygon(300, 20, Math.round((Math.random() * 2)) + 5, Math.random() * 60)
-    World.add(engine.world, [boxA, ballA, polygonA, polygonB])
-  }
-  // // fit the render viewport to the scene
-  Render.lookAt(render, {
-    min: { x: 0, y: 0 },
-    max: { x: 800, y: 600 },
-  })
-  // run the renderer
-  Render.run(render)
-
-  // // create runner
-  const runner = Runner.create()
-
-  // // run the engine
-  Runner.run(runner, engine)
+watchEffect(() => {
+  play.checkGameState()
 })
 
 </script>
 
-<template lang="pug">
-<div flex="~" justify-center>
-paper
-.box.centered.overflow-hidden(@click='f.add' ref='canvas')
-</div>
-note
-p hands-on <a href="https://brm.io/matter-js" target="_blank">Matter.js</a>
+<template>
+  <div>
+    <h1>Minesweeper</h1>
+    <div flex="~ gap1" justify-center p4>
+      <button btn @click="toggleDev()">
+        {{ isDev ? 'Normal' : 'Dev' }}
+      </button>
+      <button btn @click="play.reset()">
+        NewGame
+      </button>
+      <button btn @click="newGame('easy')">
+        Easy
+      </button>
+      <button btn @click="newGame('medium')">
+        Medium
+      </button>
+      <button btn @click="newGame('hard')">
+        Hard
+      </button>
+    </div>
+    <div flex="~ gap-10" justify-center>
+      <div text-2xl flex="~ gap-1" items-center>
+        <div i-mdi-timer />{{ timerMS }}
+      </div>
+      <div text-2xl flex="~ gap-1" items-center>
+        <div i-mdi-mine />{{ mineRest }}
+      </div>
+    </div>
+    <div p5 w-auto overflow-auto>
+      <div
+        v-for="row,y in state"
+        :key="y"
+        flex="~"
+        items-center justify-center w-max ma
+      >
+        <MineBlock
+          v-for="block,x in row" :key="x"
+          :block="block"
+          @click="play.onClick(block)"
+          @dblclick="play.autoExpand(block)"
+          @contextmenu.prevent="play.onRightClick(block)"
+        />
+      </div>
+    </div>
+    <Confetti :passed="play.state.value.status === 'won'" />
+  </div>
 </template>
