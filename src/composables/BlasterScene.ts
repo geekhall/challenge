@@ -89,9 +89,9 @@ export default class BlasterScene extends THREE.Scene {
     const shiftKey = this.keyDown.has('shift')
     if (!shiftKey) {
       if (this.keyDown.has('a') || this.keyDown.has('arrowleft'))
-        this.blaster.rotateY(0.2)
+        this.blaster.rotateY(0.02)
       else if (this.keyDown.has('d') || this.keyDown.has('arrowright'))
-        this.blaster.rotateY(-0.2)
+        this.blaster.rotateY(-0.02)
     }
 
     const dir = this.directionVector
