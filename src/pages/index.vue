@@ -20,7 +20,9 @@ const go = () => {
     <br>
     <a href="./002">002 - minesweeper</a>
     <br>
-    <a href="./003">003 - plum blossom</a>
+    <a href="./003">003 - 3D world</a>
+    <br>
+    <a href="./004">004 - plum blossom</a>
     <br>
     <a href="./test">100 - temp test page</a>
     <div py-4 />
