@@ -1,7 +1,5 @@
 <script setup lang="ts">
 
-const WIDTH = 100
-const LENGTH = 100
 const el = $ref<HTMLCanvasElement>()
 const ctx = $computed(() => el!.getContext('2d')!)
 // const pendingTasks: Function[] = []
